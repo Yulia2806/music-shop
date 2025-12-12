@@ -1,0 +1,1 @@
+<html><body><nav><a href='/'>Catalog</a> | <a href='/news'>News</a> | <a href='/pages'>Pages</a> | <a href='/gallery'>Gallery</a></nav><hr><?= $content ?></body></html>

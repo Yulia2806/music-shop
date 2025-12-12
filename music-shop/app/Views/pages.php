@@ -1,0 +1,1 @@
+<?php ob_start(); ?><h1>Pages</h1><?php foreach($pages as $p): ?><div><?= $p['title'] ?></div><?php endforeach; ?><?php $content=ob_get_clean(); include 'layout.php'; ?>
