@@ -17,7 +17,10 @@
             <td><?= htmlspecialchars($p['slug']) ?></td>
             <td>
                 <a href="/?r=admin-pages-edit&id=<?= $p['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                <a href="/?r=admin-pages-delete&id=<?= $p['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
+                <a href="/?r=admin-pages-delete&id=<?= $p['id'] ?>" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Delete?')">
+                    Delete
+                </a>
             </td>
         </tr>
     <?php endforeach; ?>

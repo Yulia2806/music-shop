@@ -42,4 +42,7 @@ class Page extends Model
         $stmt = self::$db->prepare("DELETE FROM pages WHERE id=?");
         $stmt->execute([$id]);
     }
+
+    
+
 }

@@ -192,9 +192,9 @@ switch ($route) {
             (new PagesAdminController())->delete();
             break;
 
-            case 'pages':
-                (new PagesController())->index();
-                break;
+            // case 'pages':
+            //     (new PagesController())->index();
+            //     break;
             
             case 'page':
                 (new PagesController())->show();
