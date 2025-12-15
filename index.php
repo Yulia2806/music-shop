@@ -41,6 +41,24 @@ Model::init($config['db']);
 /* ===== ROUTING ===== */
 
 $route = $_GET['r'] ?? '/';
+// use App\Core\Cache;
+
+// // 🔥 кешуємо тільки GET і не адмінку
+// $isCacheable =
+//     $_SERVER['REQUEST_METHOD'] === 'GET'
+//     && !str_starts_with($_GET['r'] ?? '', 'admin')
+//     && !in_array($_GET['r'] ?? '', ['login', 'logout']);
+
+// $cacheKey = $_SERVER['REQUEST_URI'];
+
+// if ($isCacheable) {
+//     $cached = Cache::get($cacheKey);
+//     if ($cached) {
+//         echo $cached;
+//         exit;
+//     }
+// }
+
 
 switch ($route) {
 
@@ -204,29 +222,62 @@ switch ($route) {
             (new PagesController())->index();
             break;
             case 'support':
-                (new App\Controllers\SupportController())->index();
+                (new SupportController())->index();
                 break;
             
             case 'support-send':
                 (new App\Controllers\SupportController())->send();
                 break;
             
-            case 'admin/support':
-                (new App\Controllers\SupportController())->admin();
+            case 'admin-support':
+                (new SupportController())->admin();
                 break;
             
             case 'admin/support-reply':
                 (new App\Controllers\SupportController())->reply();
                 break;
-                case 'support-ajax':
-                    (new App\Controllers\SupportController())->ajax();
-                    break;        
-                    case 'support-send-ajax':
-                        (new SupportController)->ajaxSend();
-                        break;
+
+            case 'admin-support-send':
+                (new SupportController())->adminSend();
+                break;
+
+            case 'admin-support-ajax':
+                (new SupportController())->adminAjax();
+                break;    
+
+            case 'support-ajax':
+                (new SupportController())->ajax();
+                break;
+
+            case 'support-send-ajax':
+                (new SupportController)->ajaxSend();
+                break;
+                   
+            case 'pages-json':
+                (new PagesController())->listJson();
+                break;
+
+            case 'catalog-ajax':
+                (new CatalogController())->ajax();
+                break; 
+            
+            case 'catalog-ajax-add':
+                (new CatalogController())->ajaxAdd();
+                break;
+
+            case 'news-ajax':
+                    (new NewsController())->ajax();
+                    break; 
+
+            case 'gallery-ajax':
+                (new GalleryController())->ajax();
+                break;
+
+            case 'pages-ajax':
+                (new PagesController())->ajaxList();
+                break;
                     
-         
-                
+                              
                 
                     
     /* ======================
@@ -238,3 +289,34 @@ switch ($route) {
         echo "<h1>404 Not Found</h1>";
         break;
 }
+
+// $status = http_response_code();
+// $content = ob_get_clean();
+
+// if ($status === 200 && $isCacheable) {
+//     Cache::set($cacheKey, $content);
+// }
+
+// switch ($status) {
+
+//     case 200:
+//         echo $content;
+//         break;
+
+//     case 404:
+//         include __DIR__ . '/music-shop/app/Views/errors/404.php';
+//         break;
+
+//     case 403:
+//         include __DIR__ . '/music-shop/app/Views/errors/403.php';
+//         break;
+
+//     case 500:
+//         include __DIR__ . '/music-shop/app/Views/errors/500.php';
+//         break;
+
+//     default:
+//         echo $content;
+// }
+
+
