@@ -1,62 +1,69 @@
-<h1>Support</h1>
+<div class="container mt-4">
+    <h2>Support Chat</h2>
 
-<div id="chat-box" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+    <div id="chat-box" class="border rounded p-3 mb-3"
+         style="height:300px; overflow-y:auto; background:#f8f9fa;">
+    </div>
 
-    <?php foreach ($messages as $m): ?>
-
-        <div class="d-flex mb-3 <?= $m['is_admin'] ? '' : 'justify-content-end' ?>">
-
-            <div class="chat-bubble <?= $m['is_admin'] ? 'admin' : 'user' ?>">
-                <div class="message-text">
-                    <?= nl2br(htmlspecialchars($m['message'])) ?>
-                </div>
-
-                <div class="message-meta">
-                    <?= $m['created_at'] ?> — <?= $m['is_admin'] ? 'Адмін' : 'Ви' ?>
-                </div>
-            </div>
-
-        </div>
-
-    <?php endforeach; ?>
-
+    <form id="chat-form" class="d-flex gap-2">
+        <input type="text" id="chat-input" class="form-control"
+               placeholder="Type your message..." required>
+        <button class="btn btn-primary">Send</button>
+    </form>
 </div>
 
-
-<form id="sendForm" action="/?r=support-send" method="POST">
-    <textarea name="message" class="form-control mb-2" placeholder="Ваше повідомлення..." required></textarea>
-    <button class="btn btn-primary">Send</button>
-</form>
-
 <script>
-// Auto refresh messages
+loadMessages();
+
+setInterval(loadMessages, 3000); // автооновлення
+
 function loadMessages() {
     fetch('/?r=support-ajax')
         .then(res => res.json())
-        .then(data => {
-            let html = '';
+        .then(resp => {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = '';
 
-            data.forEach(m => {
-                html += `
-                    <div class="mb-2">
-                        <strong>${m.is_admin == 1 ? 'Admin' : m.name}:</strong>
-                        <div>${m.message.replace(/\n/g, "<br>")}</div>
-                        <small class="text-muted">${m.created_at}</small>
-                        <hr>
-                    </div>`;
+            resp.data.forEach(m => {
+                const div = document.createElement('div');
+                div.className = m.is_admin == 1
+                    ? 'text-end text-primary mb-2'
+                    : 'text-start mb-2';
+
+                div.innerHTML = `
+                    <span class="badge ${m.is_admin == 1 ? 'bg-primary' : 'bg-secondary'}">
+                        ${m.is_admin == 1 ? 'Admin' : 'User'}
+                    </span>
+                    <div>${escapeHtml(m.message)}</div>
+                `;
+
+                box.appendChild(div);
             });
 
-            const box = document.getElementById('chat-box');
-            const shouldScroll = box.scrollTop + box.clientHeight >= box.scrollHeight - 50;
-
-            box.innerHTML = html;
-
-            if (shouldScroll) {
-                box.scrollTop = box.scrollHeight;
-            }
+            box.scrollTop = box.scrollHeight;
         });
 }
 
-loadMessages();
-setInterval(loadMessages, 3000);
+document.getElementById('chat-form').addEventListener('submit', e => {
+    e.preventDefault();
+
+    fetch('/?r=support-send-ajax', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'message=' + encodeURIComponent(
+            document.getElementById('chat-input').value
+        )
+    })
+    .then(res => res.json())
+    .then(() => {
+        document.getElementById('chat-input').value = '';
+        loadMessages();
+    });
+});
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 </script>

@@ -1,21 +1,24 @@
 <?php
 namespace App\Core;
 
-class Cache {
+class Cache
+{
+    private static string $path = __DIR__ . '/../../storage/cache/pages/';
 
-    public static function get($key) {
-        $file = __DIR__ . '/../../storage/cache/' . md5($key) . '.cache';
+    public static function get(string $key): ?string
+    {
+        $file = self::$path . md5($key) . '.html';
 
-        if (file_exists($file)) {
+        if (file_exists($file) && (time() - filemtime($file) < 300)) {
             return file_get_contents($file);
         }
 
-        return false;
+        return null;
     }
 
-    public static function set($key, $data) {
-        $file = __DIR__ . '/../../storage/cache/' . md5($key) . '.cache';
-
-        file_put_contents($file, $data);
+    public static function set(string $key, string $content): void
+    {
+        $file = self::$path . md5($key) . '.html';
+        file_put_contents($file, $content);
     }
 }

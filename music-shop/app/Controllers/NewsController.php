@@ -91,4 +91,11 @@ class NewsController extends BaseController
         header("Location: /?r=admin-news");
         exit;
     }
+   
+    public function ajax()
+{
+    header('Content-Type: application/json');
+    echo json_encode(News::all());
+    exit;
+}
 }

@@ -26,24 +26,36 @@ class GalleryController extends BaseController
 
     // --- UPLOAD ---
     public function upload()
-    {
-        $this->checkAdmin();
+{
+    $this->checkAdmin();
 
-        if (!empty($_FILES['photo']['name'])) {
+    if (!empty($_FILES['photo']['name'])) {
 
-            $name = time() . "_" . basename($_FILES['photo']['name']);
-            $path = "uploads/gallery/" . $name;
+        $name = time() . "_" . basename($_FILES['photo']['name']);
 
-            move_uploaded_file($_FILES['photo']['tmp_name'], $path);
+        // ✅ АБСОЛЮТНИЙ ШЛЯХ до папки
+        $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/gallery/';
 
-            Gallery::create([
-                'filename' => $name
-            ]);
+        // ✅ якщо папки нема — створюємо
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
         }
 
-        header("Location: /?r=admin-gallery");
-        exit;
+        $path = $targetDir . $name;
+
+        // ✅ переміщуємо файл
+        move_uploaded_file($_FILES['photo']['tmp_name'], $path);
+
+        // зберігаємо тільки ІМʼЯ файлу в БД
+        Gallery::create([
+            'filename' => $name
+        ]);
     }
+
+    header("Location: /?r=admin-gallery");
+    exit;
+}
+
 
     public function adminEdit()
 {
@@ -92,4 +104,10 @@ public function update()
         header("Location: /?r=admin-gallery");
         exit;
     }
+    public function ajax()
+{
+    header('Content-Type: application/json');
+    echo json_encode(Gallery::all());
+    exit;
+}
 }

@@ -7,24 +7,17 @@ class Support extends Model
 {
     protected static string $table = 'support_messages';
 
-    // Отримати всі повідомлення
     public static function getMessages()
     {
-        $tbl = static::$table;
-        $stmt = self::$db->query("SELECT * FROM $tbl ORDER BY id ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return self::all();
     }
 
-    // Додати повідомлення
     public static function addMessage($message, $is_admin = 0)
     {
-        $tbl = static::$table;
-
         $stmt = self::$db->prepare("
-            INSERT INTO $tbl (message, is_admin, created_at)
-            VALUES (?, ?, NOW())
+            INSERT INTO support_messages (message, is_admin)
+            VALUES (?, ?)
         ");
-
-        return $stmt->execute([$message, $is_admin]);
+        $stmt->execute([$message, $is_admin]);
     }
 }

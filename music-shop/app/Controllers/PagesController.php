@@ -16,18 +16,46 @@ class PagesController extends BaseController
         $id = $_GET['id'] ?? null;
 
         if (!$id) {
-            echo "Page ID is missing.";
+            http_response_code(404);
             return;
         }
-
+    
         $page = Page::find($id);
-
+    
         if (!$page) {
-            echo "Page not found.";
+            http_response_code(404);
             return;
         }
 
         return $this->render('pages/show', ['page' => $page]);
     }
+
+    public function listJson()
+{
+    header('Content-Type: application/json; charset=utf-8');
+
+    $pages = Page::all();
+
+    echo json_encode([
+        'status' => 'ok',
+        'data' => $pages
+    ]);
+    exit;
+}
+
+public function ajaxList()
+{
+    header('Content-Type: application/json');
+
+    $pages = Page::all();
+
+    echo json_encode([
+        'status' => 'success',
+        'data' => $pages
+    ]);
+    exit;
+}
+
+
 }
 

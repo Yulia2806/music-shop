@@ -46,7 +46,7 @@
                         <a class="btn btn-warning btn-sm me-2" href="/?r=admin">Admin</a>
                     </li>
                     <li class="nav-item">
-    <a class="btn btn-info btn-sm me-2" href="/?r=support">Support</a>
+    <a class="btn btn-info btn-sm me-2" href="/?r=admin-support">Support</a>
 </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-light btn-sm" href="/?r=logout">Logout</a>
